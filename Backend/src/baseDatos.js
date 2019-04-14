@@ -129,7 +129,7 @@ function registrarPasajero(valor, callback)  {
                 conexion.release();                
             }else{
                 conexion.query("INSERT INTO pasajero (no_celular, nombre, contrasena, no_tarjeta, estado, conectado)" +
-                " VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, B'1', B'1')", [valor.celular, valor.nombre, valor.contrasena, valor.tarjeta])
+                " VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, B'1', B'0')", [valor.celular, valor.nombre, valor.contrasena, valor.tarjeta])
                 .then(response1 => {
                     console.log('Registor exitoso')  
                     conexion.release()
@@ -171,7 +171,7 @@ function registrarConductor(valor, callback)  {
                 .then(response1 => {
                     if(response1.rows.length && valor.existente){
 
-                        let orden = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'1');",
+                        let orden = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'0');",
                             variables = [valor.cedula, valor.nombre, valor.contrasena, valor.placa];
                         conexion.query(orden, variables).then(response2 => {
                             respuesta.exitoso = true;
@@ -185,11 +185,11 @@ function registrarConductor(valor, callback)  {
                         })
                         
                     }else if(!response1.rows.length && valor.existente){
-                        //Taxi no registrado mentiroso
+                        //Taxi no registrado, mentiroso
                         callback(respuesta);
                         conexion.release(); 
                     }else if(response1.rows.length && !valor.existente){
-                        //Taxi ya registrado home
+                        //Taxi ya registrado
                         respuesta.taxiExiste = true;
                         callback(respuesta);
                         conexion.release(); 
@@ -214,7 +214,7 @@ function registrarConductor(valor, callback)  {
                                     conexion.release(); 
                                 }
 
-                                let orden2 = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'1');",
+                                let orden2 = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'0');",
                                 variables2 = [valor.cedula, valor.nombre, valor.contrasena, valor.placa];
                                 conexion.query(orden2, variables2, (error) =>{
                                     if(error){

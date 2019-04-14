@@ -16,7 +16,8 @@ class RegistroConductor extends Component{
       nombre: "",
       direccion: "",
       tarjeta: "",
-      contrasena: ""
+      contrasena: "",
+      registrado: false
     };
     this.handleOnchange = this.handleOnchange.bind(this);
     this.enviarSolicitud = this.enviarSolicitud.bind(this)
@@ -25,10 +26,6 @@ class RegistroConductor extends Component{
   handleOnchange = input => e =>{ 
       this.setState({ [input]: e.target.value});
   }  
-   
-  handleClickShowPassword = () => {
-    this.setState(state => ({ showPassword: !state.showPassword }));
-  };
 
   enviarSolicitud(){
     if(this.state.celular.match("^[0-9]+$")!=null){
@@ -65,7 +62,10 @@ class RegistroConductor extends Component{
               //this.props.iniciarSesion();
               handleClick({message: "Este celular ya esta registrado"})
             }else{
-              this.props.iniciarSesion();
+              alert("Registro exitosos, ya puede iniciar sesion")
+              this.setState({
+                registrado:true
+              });
             }
           }
         }
@@ -81,60 +81,66 @@ class RegistroConductor extends Component{
   render(){
     if(this.props.autenticado){
       return(
-    <Redirect to='/pasajero'/>
-    )
-  }else{
-  return (
-    <div>
-    <div id="espacio"/>
-    <div id="formularioPasajero">
-      <div id="textfields">
-    <TextField className="textfield" icon="phone"  outlined label="Celular"
-      pattern="^[0-9]+$"
-      required="required"
-      helpText={{
-        validationMsg: true,
-        children: 'Solo valores numericos'
-      }}
-      onChange={this.handleOnchange('celular')}
+        <Redirect to='/pasajero'/>
+      )
+    }else{
+      if(this.state.registrado){
+        return(
+          <Redirect to='/login'/>
+        )
+      }else{
+        return (
+          <div>
+          <div id="espacio"/>
+          <div id="formularioPasajero">
+            <div id="textfields">
+          <TextField className="textfield" icon="phone"  outlined label="Celular"
+            pattern="^[0-9]+$"
+            required="required"
+            helpText={{
+              validationMsg: true,
+              children: 'Solo valores numericos'
+            }}
+            onChange={this.handleOnchange('celular')}
+            />
+          <TextField className="textfield" icon="person"  outlined label="Nombre"
+            pattern="^([a-z\sA-Z])*$"
+            required="required"
+            helpText={{
+              validationMsg: true,
+              children:           
+                "El nombre no es valido"        
+            }}
+            onChange={this.handleOnchange('nombre')}
+            />
+            
+            <TextField className="textfield" icon="credit_card"  outlined label="Número de tarjeta"
+            pattern="^[0-9]+$"
+            required="required"
+            helpText={{
+              validationMsg: true,
+              children: 'Solo valores numericos'
+            }}
+            onChange={this.handleOnchange('tarjeta')}
+            />
+          <TextField className="textfield" icon="lock" type="password" 
+          required="required"
+          outlined label="Contraseña" 
+          onChange={this.handleOnchange('contrasena')}
+          />
+          </div> 
+          <Button
+          className="botonFormulario"
+        label="Registrarme"
+        raised
+        onClick={this.enviarSolicitud}
       />
-    <TextField className="textfield" icon="person"  outlined label="Nombre"
-      pattern="^([a-z\sA-Z])*$"
-      required="required"
-      helpText={{
-        validationMsg: true,
-        children:           
-          "El nombre no es valido"        
-      }}
-      onChange={this.handleOnchange('nombre')}
-      />
-      
-      <TextField className="textfield" icon="credit_card"  outlined label="Número de tarjeta"
-      pattern="^[0-9]+$"
-      required="required"
-      helpText={{
-        validationMsg: true,
-        children: 'Solo valores numericos'
-      }}
-      onChange={this.handleOnchange('tarjeta')}
-      />
-     <TextField className="textfield" icon="lock" type="password" 
-     required="required"
-     outlined label="Contraseña" 
-     onChange={this.handleOnchange('contrasena')}
-     />
-    </div> 
-     <Button
-     className="botonFormulario"
-  label="Registrarme"
-  raised
-  onClick={this.enviarSolicitud}
-/>
-<br/><br/>
-<MensajeSnack/>
-    </div>
-    </div>
-  );
+      <br/><br/>
+      <MensajeSnack/>
+          </div>
+          </div>
+        );
+      }
 }
 }
 
