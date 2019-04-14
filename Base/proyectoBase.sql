@@ -1,13 +1,13 @@
+
+-- Se eliminan y se añaden las extensiones de postgis y pscrypto:
 DROP EXTENSION IF EXISTS postgis CASCADE;
 DROP EXTENSION IF EXISTS postgis_topology CASCADE;
 DROP EXTENSION IF EXISTS pgcrypto; 
-
-
-
 CREATE EXTENSION pgcrypto;
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 
+-- Tabla para almacenar taxis:
 DROP TABLE IF EXISTS taxi CASCADE;
 CREATE TABLE taxi(
 	placa VARCHAR(6) NOT NULL,
@@ -20,6 +20,7 @@ CREATE TABLE taxi(
 	CONSTRAINT taxi_pk PRIMARY KEY(placa)
 );
 
+-- Tabla para almacenar conductor:
 DROP TABLE IF EXISTS conductor CASCADE;
 CREATE TABLE conductor(
 	cedula VARCHAR(20) NOT NULL,
@@ -33,6 +34,7 @@ CREATE TABLE conductor(
 	CONSTRAINT placa_fk FOREIGN KEY(placa) REFERENCES taxi(placa)
 );
 
+--Tabla para almacenar pasajeros:
 DROP TABLE IF EXISTS pasajero CASCADE; 
 CREATE TABLE pasajero(
 	no_celular VARCHAR(10) NOT NULL,
@@ -44,6 +46,8 @@ CREATE TABLE pasajero(
 	conectado BIT NOT NULL,
 	CONSTRAINT pasajero_pk PRIMARY KEY (no_celular)
 );
+
+-- Tabla para almacenar destinos favoritos:
 DROP TABLE IF EXISTS favoritos;
 CREATE TABLE favoritos(
 	no_celular VARCHAR(10) NOT NULL,
@@ -51,6 +55,8 @@ CREATE TABLE favoritos(
 	CONSTRAINT favoritos_pk PRIMARY KEY (no_celular,favorito),
 	CONSTRAINT favoritos_fk FOREIGN KEY(no_celular) REFERENCES pasajero(no_celular)
 );
+
+-- Tabla para almacenar servicios prestados:
 DROP TABLE IF EXISTS servicio;
 CREATE TABLE servicio(
 	no_servicio SERIAL NOT NULL,
@@ -69,6 +75,7 @@ CREATE TABLE servicio(
 	CONSTRAINT servicio_fk1 FOREIGN KEY(no_celular) REFERENCES pasajero(no_celular)
 );
 
+-- Procedimiento almacenado que calcula la distancia y el costo antes de insertar un registro de servicio:
 CREATE OR REPLACE FUNCTION calcularCosto() RETURNS TRIGGER AS $$
 DECLARE 
 	distancia FLOAT:=0;
@@ -89,15 +96,18 @@ BEGIN
 	RETURN NEW;
 END 
 $$ LANGUAGE plpgsql;
-																	   
+					
+-- Disparador para activar el procedimiento anterior al realizar un INSERT:
 CREATE TRIGGER inserta_servicio BEFORE INSERT ON servicio FOR EACH ROW EXECUTE PROCEDURE calcularCosto();
 
+-- Inserciones básicas para hacer pruebas:
 INSERT INTO pasajero VALUES('3163611275','Cucho',crypt('estemen',gen_salt('bf')),'123456789',ST_GeomFromText('POINT(3.373190 -76.535214)',4326),B'1',B'0');
 INSERT INTO taxi VALUES('abc234','mazda','2','2018','12345',B'1',B'0');
 INSERT INTO conductor VALUES('1122445577','YISUS',crypt('nel',gen_salt('bf')),'abc234',B'1',ST_GeomFromText('POINT(3.373190 -76.535214)',4326),B'1');
 
 ALTER TABLE servicio ALTER COLUMN costo DROP NOT NULL;
-ALTER TABLE servicio Alter column distancia DROP NOT NULL;
+ALTER TABLE servicio Alter COLUMN distancia DROP NOT NULL;
+														
 /*
 INSERT INTO servicio(cedula,no_celular,calificacion,pagado,origen,destino,realizado) VALUES(
 	'1122445577',
@@ -108,19 +118,15 @@ INSERT INTO servicio(cedula,no_celular,calificacion,pagado,origen,destino,realiz
 	ST_GeomFromText('POINT(3.434302 -76.535375)',4326),
 	B'0'
 	);
-*/												
+*/										
 																	
-
-
+-- Eliminación y creación de los índices:
 DROP INDEX IF EXISTS indice_pasajero;
-DROP INDEX IF EXISTS indice_conductor;
-														
+DROP INDEX IF EXISTS indice_conductor;								
 CREATE INDEX indice_pasajero ON pasajero USING hash(no_celular);
 CREATE INDEX indice_conductor ON conductor USING hash(cedula);
 
+-- Eliminación, creación y otorgamiento de permisos a un perfil llamado -usuario-:
 DROP USER IF EXISTS usuario;
 CREATE USER usuario PASSWORD '1234';
 GRANT INSERT,SELECT,UPDATE ON taxi,conductor,pasajero,favoritos,servicio TO usuario; 			
-
-SELECT * FROM servicio;  
-
