@@ -5,3 +5,8 @@ services:
     build: ./Base
     ports:
       - 5432:5432
+  backend:
+    container_name: BPBackend
+    build: ./Backend
+    ports:
+      - 4000:4000

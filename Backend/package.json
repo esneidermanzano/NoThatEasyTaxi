@@ -9,9 +9,6 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.18.10"
-  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",

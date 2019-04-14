@@ -2,7 +2,7 @@ const pg = require('pg');
 
 const connectionData ={
     user: 'postgres',
-    host: 'localhost',
+    host: 'base',
     database: 'proyectoBases',
     password: 'stemen',
     port: 5432,
