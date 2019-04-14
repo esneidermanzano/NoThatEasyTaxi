@@ -1,4 +1,4 @@
-
+﻿
 -- Se eliminan y se añaden las extensiones de postgis y pscrypto:
 DROP EXTENSION IF EXISTS postgis CASCADE;
 DROP EXTENSION IF EXISTS postgis_topology CASCADE;

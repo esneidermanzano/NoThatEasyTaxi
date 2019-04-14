@@ -5,13 +5,3 @@ services:
     build: ./Base
     ports:
       - 5432:5432
-  backend:
-    container_name: BPbackend
-    build: ./Backend
-    ports:
-      - 4000:4000
-  frontend:
-    container_name: BPfrontend
-    build: ./Frontend
-    ports:
-      - 3000:3000
