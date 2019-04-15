@@ -491,7 +491,7 @@ function actPosicion(valor, callback)  {
             errorBase: false
         };
         console.log(valor)
-        conexion.query("UPDATE conductor SET posicion=ST_GeoFromText('POINT("+valor.posicion+")', 4326) WHERE cedula =$1", [valor.identificador])
+        conexion.query("UPDATE conductor SET posicion=ST_GeomFromText('POINT("+valor.posicion+")', 4326) WHERE cedula =$1", [valor.id])
         .then(response =>{
             conexion.release()
             callback(respuesta); 
