@@ -7,6 +7,8 @@ This is a DataBase's proyect subject
 For use this project you must to have or install next programs:
 - Docker CE
 - Docker compose
+
+View installation documentation of [Docker CE](https://docs.docker.com/v17.12/install/) and [Docker compose](https://docs.docker.com/compose/install/)
 ## Installation
 
 First, you have to clone this repository or download it, then go into the container folder, and execute docker-compose.yml file as follow: 
