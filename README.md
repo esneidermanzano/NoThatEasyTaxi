@@ -19,4 +19,13 @@ This step begins to prepare Docker's containers with the proyect, when finished,
 ```bash
 docker-compose up
 ```
-Wait until finished, and then ¡you can use it!
+Wait until finished, you should see next lines:
+
+```bash
+database system is ready to accept connections // --Database-Server ready
+Servidor corriendo  //-- Backend ready
+You can now view interface in the browser. //-- Front ready
+
+```
+
+So, ¡you can use it!
