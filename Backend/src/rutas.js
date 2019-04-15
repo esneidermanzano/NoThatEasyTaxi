@@ -66,6 +66,13 @@ server.route('/conectado').post (function (req, res) {
     });   
 });
 
+server.route('/actposicion').post (function (req, res) {
+    consultorBase.actPosicion(req.body, (respuesta) =>  {
+     console.log(respuesta)
+     res.send(respuesta)
+    });   
+});
+
 server.route('/obtenerdatos').post (function (req, res) {
     consultorBase.obtenerDatos(req.body, (respuesta) =>  {
      console.log(respuesta)

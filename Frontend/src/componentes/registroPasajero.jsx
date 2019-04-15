@@ -1,6 +1,5 @@
 import React,{Component} from 'react'
 import {Redirect} from 'react-router-dom'
-// Redirect, withRouter
 import { TextField } from '@rmwc/textfield';
 import { Button } from '@rmwc/button';
 import MensajeSnack, {handleClick} from './mensaje'

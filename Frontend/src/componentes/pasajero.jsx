@@ -1,5 +1,4 @@
 import React, {createRef} from 'react';
-//import {Redirect} from 'react-router-dom'
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, Marker, Popup, withLeaflet } from 'react-leaflet'
 import L from 'leaflet'
@@ -57,7 +56,7 @@ class Pasajero extends React.Component {
     this.refMap = createRef()
     this.solicitarServicio = this.solicitarServicio.bind(this)
     this.finalizarServicio = this.finalizarServicio.bind(this)
-    this.enviarCalificacion = this. enviarCalificacion.bind(this)
+    this.enviarCalificacion = this.enviarCalificacion.bind(this)
   }
     componentDidMount(){
         navigator.geolocation.getCurrentPosition((position) => {
@@ -136,7 +135,7 @@ class Pasajero extends React.Component {
           if (res.ok) {
             return res.json();
           } else {
-            handleClick({message: "Algo salio mal, intentalo mas tarde", error: true})
+            handleClick({message: "Algo salio mal, intentalo mas tarde"})
             console.log("algo salio mal")
           }
         })

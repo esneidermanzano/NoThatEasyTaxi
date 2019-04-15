@@ -485,6 +485,27 @@ function cobrar(valor, callback)  {
     });
 }
 
+function actPosicion(valor, callback)  {
+    conexion.connect().then(conexion => {
+        let respuesta = {
+            errorBase: false
+        };
+        console.log(valor)
+        conexion.query("UPDATE conductor SET posicion=ST_GeoFromText('POINT("+valor.posicion+")', 4326) WHERE cedula =$1", [valor.identificador])
+        .then(response =>{
+            conexion.release()
+            callback(respuesta); 
+        }).catch(err=>{
+            console.log("Error al actualizar posicion "+ err)
+            respuesta.errorBase = true;
+            conexion.release()
+            callback(respuesta); 
+        })
+
+    });
+}
+
+module.exports.actPosicion = actPosicion;
 module.exports.cobrar = cobrar;
 module.exports.obtenerDatos = obtenerDatos;
 module.exports.actualizarConectado = actualizarConectado;

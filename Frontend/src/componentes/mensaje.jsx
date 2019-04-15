@@ -19,8 +19,8 @@ class MensajeSnack extends React.Component {
     openSnackbarFn = this.handleClick;
   }
 
-  handleClick = ({message, error}) => {
-    this.setState({ open: true, mensaje: message, error: error});
+  handleClick = ({message}) => {
+    this.setState({ open: true, mensaje: message});
   };
   render() {
     return (

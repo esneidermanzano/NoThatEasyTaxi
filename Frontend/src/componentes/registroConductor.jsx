@@ -1,6 +1,5 @@
 import React,{Component} from 'react'
-import {Redirect, withRouter} from 'react-router-dom'
-// Redirect, withRouter
+import {Redirect} from 'react-router-dom'
 import { TextField } from '@rmwc/textfield';
 import { Button } from '@rmwc/button';
 import { Grid, GridCell} from '@rmwc/grid';
@@ -74,6 +73,7 @@ class RegistroConductor extends Component{
         case 6: mensaje = "La marca no es valida"; break;
         case 7: mensaje = "El soat no es valido"; break;
         case 8: mensaje = "La contraseña esta vacia"; break;
+        default: mensaje = "Error, vuelva mas tarde"; break;
       }
       handleClick({message: mensaje})
     }

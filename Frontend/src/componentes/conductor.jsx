@@ -28,10 +28,6 @@ class Conductor extends React.Component {
             lat: 3.4517923,
             lng: -76.5324943,
         },
-        posicion2:{
-            lat: 3.4517999,
-            lng: -76.5324999,
-        },
       zoom: 16,
       origen: false,
       servicio : "",
@@ -44,6 +40,7 @@ class Conductor extends React.Component {
     this.refMarker = createRef()
     this.refMarker1 = createRef()
     this.refMap = createRef()
+    this.actualizarPosicion = this.actualizarPosicion.bind(this)
   }
     componentWillMount(){
       funcionImprimir = this.printPosition;
@@ -54,11 +51,10 @@ class Conductor extends React.Component {
       navigator.geolocation.getCurrentPosition((position) => {
           console.log(position.coords.latitude +" "+ position.coords.longitude);
           this.setState({
-              posicion1:{lat: position.coords.latitude, lng: position.coords.longitude},
-              posicion2:{lat: position.coords.latitude, lng: position.coords.longitude},
-
+              posicion1:{lat: position.coords.latitude, lng: position.coords.longitude}
           })
         });
+        this.actualizarPosicion()
         this.setState({servicio: setInterval(this.consultarServicio, 5000)})
     }
 
@@ -75,17 +71,8 @@ class Conductor extends React.Component {
       this.setState({
         posicion1: this.refMarker.current.leafletElement.getLatLng(),
         zoom: zoom.leafletElement.getZoom(),
-      })        
-    }
-
-    setPosition2 = (lating) => {
-      this.refMarker1.current.leafletElement.setLatLng(lating)
-      const zoom = this.refMap.current
-      //console.log(this.refMarker1.current.leafletElement.getLatLng())
-      this.setState({
-        posicion2: this.refMarker1.current.leafletElement.getLatLng(),
-        zoom: zoom.leafletElement.getZoom()
-      })      
+      })    
+      this.actualizarPosicion()    
     }
     // ======= Fin actualizar marcadores al buscar ==========
 
@@ -99,21 +86,41 @@ class Conductor extends React.Component {
           posicion1: marker.leafletElement.getLatLng(),
           zoom: zoom.leafletElement.getZoom()
         })
-      }
-    }
-
-    updatePosition2 = () => {
-      const marker = this.refMarker1.current
-      const zoom = this.refMap.current
-      if (marker != null) {
-          //console.log(zoom.leafletElement.getZoom())
-        this.setState({
-          posicion2: marker.leafletElement.getLatLng(),
-          zoom: zoom.leafletElement.getZoom(),
-        })
+        this.actualizarPosicion()
       }
     }
     // ======= Fin al arrastrar los marcadores ==========
+
+
+    actualizarPosicion(){ 
+      console.log("origen: "+ this.state.posicion1.lat +" "+this.state.posicion1.lng)
+      const input = {
+        id: this.props.identificador, 
+        posicion: this.state.posicion1.lat +" "+this.state.posicion1.lng,
+      };
+      let url = "http://"+ this.props.url + ":4000/actposicion";
+        const opciones = {
+          method: 'POST',  
+          body: JSON.stringify(input),  
+          headers:{'Content-Type': 'application/json'}
+        };
+        const request = new Request(url, opciones);
+        fetch(request).then(function(res) {
+          if (res.ok) {
+            return res.json();
+          } else {
+            handleClick({message: "Algo salio mal, intentalo mas tarde"})
+          }
+        }).then((response) => {
+          console.log('Success:', JSON.stringify(response))
+          if (response.errorBase) {
+            handleClick({message: "Algo salio mal, intentalo mas tarde"})  
+          }
+        }
+        ).catch(error => {
+          console.log("error en l base")
+        })   
+    }
 
     printPosition = () => {
       if (navigator.geolocation){
@@ -121,7 +128,6 @@ class Conductor extends React.Component {
           console.log(position.coords.latitude +" "+ position.coords.longitude);
           this.setState({
               posicion1:{lat: position.coords.latitude, lng: position.coords.longitude}
-              // posicion2:{lat: position.coords.latitude, lng: position.coords.longitude},
           })
         }, (error) => {
           alert("Tu navegador bloqueo la ubicacion")
@@ -159,7 +165,6 @@ class Conductor extends React.Component {
             console.log("Salio algo mal en a base")          
           }else{
             if(response.hayServicio){
-              //handleClick({message: "Todo salio bien"})
               console.log("Prestando Servicio")
               this.setState({
                 posicion1: {lat: response.destinoX, lng: response.destinoY},
@@ -182,10 +187,7 @@ class Conductor extends React.Component {
 
     render() {
 
-        const position1 = [this.state.posicion1.lat, this.state.posicion1.lng]
-      //const position2 = [this.state.posicion2.lat, this.state.posicion2.lng]
-      //console.log((position1[0] + position2[0])/2 +" "+ (position1[1] + position2[1])/2)
-      //const positionF = [(position1[0] + position2[0])/2, (position1[1] + position2[1])/2]
+      const position1 = [this.state.posicion1.lat, this.state.posicion1.lng]
       const GeoSearch = withLeaflet(Buscador)
       const antPolygon = [
         position1

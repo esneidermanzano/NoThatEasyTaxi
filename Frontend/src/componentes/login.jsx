@@ -28,11 +28,6 @@ class Login extends Component{
   handleOnchange = input => e =>{ 
       this.setState({ [input]: e.target.value});
   }  
-   
-  handleClickShowPassword = () => {
-    this.setState(state => ({ showPassword: !state.showPassword }));
-  };
-
   enviarSolicitud(){
     let esConductor = (JSON.parse(this.state.conductor));
     if(this.state.identificador.match("^[0-9]+$")!=null){
@@ -99,8 +94,7 @@ class Login extends Component{
     }else{
       handleClick({message: (esConductor)?
                   "El número de CEDULA es invalido":
-                  "El número de CELULAR es invalido",
-                  error: true
+                  "El número de CELULAR es invalido"
                   })
     }    
   }
