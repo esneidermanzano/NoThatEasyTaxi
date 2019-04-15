@@ -398,7 +398,7 @@ footer>small{
 }
 
 .solicitarTaxi{
-	z-index: 9000;
+	z-index: 1;
 	background: #333!important;
 	position: absolute;
 	bottom: 70px;
@@ -468,13 +468,10 @@ footer>small{
 .mdc-text-field--fullwidth {
 	width: 50%;
 }
-.mensajeExito .mdc-snackbar__surface {
-	background-color: #27ab66;
+.mdc-snackbar__surface {
+	background-color: #333;
 }
 
-.mensajeError .mdc-snackbar__surface {
-	background-color: #d13438;
-}
 
 
 :root {

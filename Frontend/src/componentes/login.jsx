@@ -73,7 +73,7 @@ class Login extends Component{
                 if(response.ocupado){
                   handleClick({message: "La sesion ya esta iniciada"})
                 }else{
-                this.props.iniciarSesion({valor: esConductor, nombre: response.nombre, id:response.id});
+                  this.props.iniciarSesion({valor: esConductor, nombre: response.nombre, id:response.id});
                 }
               }            
             }else{

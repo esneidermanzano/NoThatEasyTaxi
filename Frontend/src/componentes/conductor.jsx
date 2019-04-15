@@ -18,7 +18,7 @@ var iconoMapa = L.icon({
     popupAnchor: [0, -40],
 });
 
-let funcionImprimir, funcionEnviar;
+let funcionImprimir;
 
 class Conductor extends React.Component {
   constructor(props){
@@ -47,7 +47,7 @@ class Conductor extends React.Component {
   }
     componentWillMount(){
       funcionImprimir = this.printPosition;
-      funcionEnviar = this.consultarServicio;
+      this.consultarServicio()
     }
 
     componentDidMount(){      
@@ -67,7 +67,7 @@ class Conductor extends React.Component {
       this.setState({servicio: clearInterval(this.state.servicio)})
     }
       
-
+    // ======= Comienzo actualizar marcadores al buscar ==========
     setPosition1 = (lating) => {
       this.refMarker.current.leafletElement.setLatLng(lating)
       const zoom = this.refMap.current
@@ -87,8 +87,9 @@ class Conductor extends React.Component {
         zoom: zoom.leafletElement.getZoom()
       })      
     }
+    // ======= Fin actualizar marcadores al buscar ==========
 
-      // ======= Comienzo al arrastrar los marcadores ==========
+    // ======= Comienzo al arrastrar los marcadores ==========
     updatePosition1 = () => {
       const marker = this.refMarker.current
       const zoom = this.refMap.current
@@ -112,7 +113,7 @@ class Conductor extends React.Component {
         })
       }
     }
-      // ======= Fin al arrastrar los marcadores ==========
+    // ======= Fin al arrastrar los marcadores ==========
 
     printPosition = () => {
       if (navigator.geolocation){
@@ -158,7 +159,7 @@ class Conductor extends React.Component {
             console.log("Salio algo mal en a base")          
           }else{
             if(response.hayServicio){
-              handleClick({message: "Todo salio bien"})
+              //handleClick({message: "Todo salio bien"})
               console.log("Prestando Servicio")
               this.setState({
                 posicion1: {lat: response.destinoX, lng: response.destinoY},

@@ -28,7 +28,8 @@ class RegistroConductor extends Component{
       placa: "",
       baul: "true",
       soat: "",
-      contrasena: ""
+      contrasena: "",
+      registrado: false
 
     };
     this.handleOnchange = this.handleOnchange.bind(this);
@@ -38,10 +39,6 @@ class RegistroConductor extends Component{
   handleOnchange = input => e =>{ 
       this.setState({ [input]: e.target.value});
   }  
-   
-  handleClickShowPassword = () => {
-    this.setState(state => ({ showPassword: !state.showPassword }));
-  };
 
   enviarSolicitud(){
     let valido = 0, mensaje ="",
@@ -91,7 +88,8 @@ class RegistroConductor extends Component{
           existente: true
         };
       }else{
-        input = {   
+        input = {  
+          contrasena: this.state.contrasena, 
           baul: JSON.parse(this.state.baul),       
           placa: this.state.placa.toLowerCase(),
           marca: this.state.marca,
@@ -100,7 +98,6 @@ class RegistroConductor extends Component{
           soat: this.state.soat,                   
           cedula: this.state.cedula,
           nombre: this.state.nombre,
-          contrasena: this.state.contrasena,
         };
       }
       const opciones = {
@@ -124,8 +121,10 @@ class RegistroConductor extends Component{
           handleClick({message: "Algo salio mal, intentalo mas tarde"})            
         }else{
           if(response.exitoso){
-            console.log("Exitoso?")
-            this.props.iniciarSesion();
+            alert("Registro exitoso, ya puede iniciar sesion")
+            this.setState({
+              registrado:true
+            });
           }else{
             if(response.conductorExiste){
               handleClick({message: "Esta cedula ya esta registrada"})
@@ -150,148 +149,154 @@ class RegistroConductor extends Component{
       return(
         <Redirect to='/conductor'/>
       )
-  }else{
-  return (
-    <div id="fondoFormularioConductor">
-    <div id="espacio"/>
-      <div className="card card-2">
-        <div className="card-heading"/>
-        <div id="formularioConductor">
-          <h2>Conduce con nosotros</h2>
-          <h3>Datos Personales</h3><br/><br/>
-          <Grid>
-            <GridCell span={6}>     
-              <TextField className="textfield" icon="person"  outlined label="Nombre"
-                pattern="^([a-z\sA-Z])*$"
-                required="required"
-                helpText={{
-                  validationMsg: true,
-                  children: "El nombre no es valido"        
-                }}
-                onChange={this.handleOnchange('nombre')}
-              />
-              </GridCell> 
-              <GridCell span={6}>
-                <TextField className="textfield" icon="closed_caption"  outlined label="Cedula"
-                  pattern="^[0-9]+$"
-                  required="required"
-                  helpText={{
-                    validationMsg: true,
-                    children: 'Solo valores numericos'
-                  }}
-                  onChange={this.handleOnchange('cedula')}
-                />
-              </GridCell> 
-            </Grid>
-            <h3>Datos del vehículo</h3><br/><br/><br/><br/>
-            <Switch
-              checked={this.state.existente}
-              onChange={evt => this.setState({existente: !this.state.existente})}
-              label="&nbsp;&nbsp;TAXI YA REGISTRADO"/>
-              <br/><br/>
-            <Grid>            
-            <GridCell span={6}>
-              <TextField className="textfield" icon="money"  outlined 
-                label="Placa"
-                pattern="^([a-zA-Z0-9])*$"
-                required="required"
-                helpText={{
-                  validationMsg: true,
-                  children: "La Placa no es valida"        
-                }}
-                onChange={this.handleOnchange('placa')}
-              />             
-            </GridCell> 
-              <GridCell span={6}>
-                <TextField className="textfield" icon="drag_indicator"  outlined 
-                  disabled ={this.state.existente}
-                  label="Referencia"
-                  pattern="^([a-zA-Z0-9])*$"
-                  required="required"
-                  helpText={{
-                    validationMsg: true,
-                    children: "La Referencia no es valida"        
-                  }}
-                  onChange={this.handleOnchange('referencia')}
-                />
-              </GridCell> 
-      
-            <GridCell span={6}>
-            <TextField className="textfield" icon="group_work"  outlined 
-              disabled ={this.state.existente}
-              label="Modelo"
-              pattern="^\d{4}$"
-              required="required"
-              helpText={{
-                validationMsg: true,
-                children: "El Modelo no es valido"        
-              }}
-              onChange={this.handleOnchange('modelo')}
-            />
-            </GridCell> 
-              <GridCell span={6}>
-              <TextField className="textfield" icon="local_taxi"  outlined 
-                disabled ={this.state.existente}
-                label="Marca"
-                pattern="^([a-z\sA-Z])*$"
-                required="required"
-                helpText={{
-                  validationMsg: true,
-                  children: "La Marca no es valida"        
-                }}
-                onChange={this.handleOnchange('marca')}
-              />
-            </GridCell> 
-
-            <GridCell span={6}>
-            <span style={{color:'#797979'}}>¿El taxi tiene Baul?</span>
-            <div id="botones">
-              <Radio className="radioBoton"
-                disabled ={this.state.existente}
-                value="true"
-                onChange={this.handleOnchange('baul')}
-                checked = {this.state.baul === 'true'}
-                >Si
-              </Radio>
-              <Radio className="radioBoton"
-                disabled ={this.state.existente}
-                value="false"
-                onChange={this.handleOnchange('baul')}
-                checked = {this.state.baul === 'false'}  
-                >No</Radio>
+    }else{
+      if(this.state.registrado){
+        return(
+          <Redirect to='/login'/>
+        )
+      }else{
+        return (
+          <div id="fondoFormularioConductor">
+          <div id="espacio"/>
+            <div className="card card-2">
+              <div className="card-heading"/>
+              <div id="formularioConductor">
+                <h2>Conduce con nosotros</h2>
+                <h3>Datos Personales</h3><br/><br/>
+                <Grid>
+                  <GridCell span={6}>     
+                    <TextField className="textfield" icon="person"  outlined label="Nombre"
+                      pattern="^([a-z\sA-Z])*$"
+                      required="required"
+                      helpText={{
+                        validationMsg: true,
+                        children: "El nombre no es valido"        
+                      }}
+                      onChange={this.handleOnchange('nombre')}
+                    />
+                    </GridCell> 
+                    <GridCell span={6}>
+                      <TextField className="textfield" icon="closed_caption"  outlined label="Cedula"
+                        pattern="^[0-9]+$"
+                        required="required"
+                        helpText={{
+                          validationMsg: true,
+                          children: 'Solo valores numericos'
+                        }}
+                        onChange={this.handleOnchange('cedula')}
+                      />
+                    </GridCell> 
+                  </Grid>
+                  <h3>Datos del vehículo</h3><br/><br/><br/><br/>
+                  <Switch
+                    checked={this.state.existente}
+                    onChange={evt => this.setState({existente: !this.state.existente})}
+                    label="&nbsp;&nbsp;TAXI YA REGISTRADO"/>
+                    <br/><br/>
+                  <Grid>            
+                  <GridCell span={6}>
+                    <TextField className="textfield" icon="money"  outlined 
+                      label="Placa"
+                      pattern="^([a-zA-Z0-9])*$"
+                      required="required"
+                      helpText={{
+                        validationMsg: true,
+                        children: "La Placa no es valida"        
+                      }}
+                      onChange={this.handleOnchange('placa')}
+                    />             
+                  </GridCell> 
+                    <GridCell span={6}>
+                      <TextField className="textfield" icon="drag_indicator"  outlined 
+                        disabled ={this.state.existente}
+                        label="Referencia"
+                        pattern="^([a-zA-Z0-9])*$"
+                        required="required"
+                        helpText={{
+                          validationMsg: true,
+                          children: "La Referencia no es valida"        
+                        }}
+                        onChange={this.handleOnchange('referencia')}
+                      />
+                    </GridCell> 
+            
+                  <GridCell span={6}>
+                  <TextField className="textfield" icon="group_work"  outlined 
+                    disabled ={this.state.existente}
+                    label="Modelo"
+                    pattern="^\d{4}$"
+                    required="required"
+                    helpText={{
+                      validationMsg: true,
+                      children: "El Modelo no es valido"        
+                    }}
+                    onChange={this.handleOnchange('modelo')}
+                  />
+                  </GridCell> 
+                    <GridCell span={6}>
+                    <TextField className="textfield" icon="local_taxi"  outlined 
+                      disabled ={this.state.existente}
+                      label="Marca"
+                      pattern="^([a-z\sA-Z])*$"
+                      required="required"
+                      helpText={{
+                        validationMsg: true,
+                        children: "La Marca no es valida"        
+                      }}
+                      onChange={this.handleOnchange('marca')}
+                    />
+                  </GridCell> 
+    
+                  <GridCell span={6}>
+                  <span style={{color:'#797979'}}>¿El taxi tiene Baul?</span>
+                  <div id="botones">
+                    <Radio className="radioBoton"
+                      disabled ={this.state.existente}
+                      value="true"
+                      onChange={this.handleOnchange('baul')}
+                      checked = {this.state.baul === 'true'}
+                      >Si
+                    </Radio>
+                    <Radio className="radioBoton"
+                      disabled ={this.state.existente}
+                      value="false"
+                      onChange={this.handleOnchange('baul')}
+                      checked = {this.state.baul === 'false'}  
+                      >No</Radio>
+                  </div>
+                  </GridCell> 
+                    <GridCell span={6}>
+                      <TextField className="textfield" icon="security"  outlined 
+                      disabled ={this.state.existente}
+                      label="SOAT"
+                      pattern="^[0-9]+$"
+                      required="required"
+                      helpText={{
+                        validationMsg: true,
+                        children: 'Solo valores numericos'
+                      }}
+                      onChange={this.handleOnchange('soat')}
+                      />
+                    </GridCell> 
+                  </Grid>
+                    <TextField className="textfield" icon="lock" type="password" 
+                    required="required"
+                    outlined label="Contraseña" 
+                    onChange={this.handleOnchange('contrasena')}
+                    />
+                      <Button
+              className="botonFormulario"
+            label="Registrarme"
+            raised
+            onClick={this.enviarSolicitud}
+          />
+          <MensajeSnack/>
+              </div>
             </div>
-            </GridCell> 
-              <GridCell span={6}>
-                <TextField className="textfield" icon="security"  outlined 
-                disabled ={this.state.existente}
-                label="SOAT"
-                pattern="^[0-9]+$"
-                required="required"
-                helpText={{
-                  validationMsg: true,
-                  children: 'Solo valores numericos'
-                }}
-                onChange={this.handleOnchange('soat')}
-                />
-              </GridCell> 
-            </Grid>
-              <TextField className="textfield" icon="lock" type="password" 
-              required="required"
-              outlined label="Contraseña" 
-              onChange={this.handleOnchange('contrasena')}
-              />
-                <Button
-        className="botonFormulario"
-      label="Registrarme"
-      raised
-      onClick={this.enviarSolicitud}
-    />
-    <MensajeSnack/>
-        </div>
-      </div>
-    </div>
-    );
-}
+          </div>
+          );
+      }  
+    }
 }
 
 /** <TextField className="textfield" icon="home"  outlined label="Dirección"

@@ -229,7 +229,6 @@ class Pasajero extends React.Component {
 
     
     render() {
-
       const position1 = [this.state.posicion1.lat, this.state.posicion1.lng]
       const position2 = [this.state.posicion2.lat, this.state.posicion2.lng]
       if(position1 === position2){console.log("es igual")}
@@ -292,8 +291,6 @@ class Pasajero extends React.Component {
         position2
       ];
       return (
-
-//center={positionF} zoom={this.state.zoom}
         <Map className="mapa" maxZoom= "19" bounds = {antPolygon}  ref={this.refMap}>
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

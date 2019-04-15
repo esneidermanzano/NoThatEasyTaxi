@@ -203,37 +203,39 @@ function registrarConductor(valor, callback)  {
                             }
                             let orden = "", variables = [valor.placa, valor.marca, valor.referencia, valor.modelo, valor.soat];
                             if(valor.baul){
-                                orden = "INSERT INTO taxi VALUES ($1, $2, $3, $4, $5, B'1')";
+                                orden = "INSERT INTO taxi VALUES ($1, $2, $3, $4, $5, B'1', B'0')";
                             }else{
-                                orden = "INSERT INTO taxi VALUES ($1, $2, $3, $4, $5, B'0')"
+                                orden = "INSERT INTO taxi VALUES ($1, $2, $3, $4, $5, B'0', B'0')"
                             }
                             conexion.query(orden, variables, (error) =>{
                                 if(error){
                                     respuesta.errorBase = true;
                                     callback(respuesta);
                                     conexion.release(); 
-                                }
-
-                                let orden2 = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'0');",
-                                variables2 = [valor.cedula, valor.nombre, valor.contrasena, valor.placa];
-                                conexion.query(orden2, variables2, (error) =>{
-                                    if(error){
-                                        respuesta.errorBase = true;
-                                        callback(respuesta);
-                                        conexion.release(); 
-                                    }    
-                                    conexion.query('COMMIT', (error) => {
+                                }else{
+                                    let orden2 = "INSERT INTO conductor VALUES($1,$2,crypt($3,gen_salt('bf')),$4, B'1', ST_GeomFromText('POINT(3.451792 -76.532494)',4326), B'0');",
+                                    variables2 = [valor.cedula, valor.nombre, valor.contrasena, valor.placa];
+                                    conexion.query(orden2, variables2, (error) =>{
                                         if(error){
                                             respuesta.errorBase = true;
                                             callback(respuesta);
                                             conexion.release(); 
-                                        } 
-                                        respuesta.exitoso = true
-                                        conexion.release();
-                                        callback(respuesta);
-                                        console.log("Registro exitoso!")
-                                    })            
-                                });                                
+                                        }else{
+                                            conexion.query('COMMIT', (error) => {
+                                                if(error){
+                                                    respuesta.errorBase = true;
+                                                    callback(respuesta);
+                                                    conexion.release(); 
+                                                }else{
+                                                    respuesta.exitoso = true
+                                                    conexion.release();
+                                                    callback(respuesta);
+                                                    console.log("Registro exitoso!")
+                                                }                                                
+                                            })  
+                                        }                                                   
+                                    }); 
+                                }                               
                             });                                                
                         });  
                     }                                                    
@@ -435,13 +437,15 @@ function obtenerDatos(valor, callback)  {
                     respuesta.kilometros = "0";
                 }                
                 if(valor.conductor){
-                    conexion.query("SELECT SUM(costo) FROM servicio WHERE cedula = $1 AND pagado = B'0'", [valor.identificador])
+                    conexion.query("SELECT SUM(costo) AS total FROM servicio WHERE cedula = $1 AND pagado = B'0'", [valor.identificador])
                     .then(response =>{
                         if(response.rows[0].total !== null){
                             respuesta.saldo = response.rows[0].total; 
                         }else{
                             respuesta.saldo = "0"; 
-                        }                                                                
+                        }    
+                        conexion.release()
+                        callback(respuesta);                                                         
                     }).catch(err=>{
                         console.log("Error al obtener el total "+ err)
                         respuesta.errorBase = true;

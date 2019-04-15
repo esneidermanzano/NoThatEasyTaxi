@@ -81,7 +81,7 @@ class PaginaInicio extends Component {
 
     let input = {
       identificador: this.state.identificador, 
-      conductor: this.state.conductor
+      conductor: valor.valor
       };
     let url = "http://"+ URL +":4000/obtenerdatos";
     const opciones = {
@@ -98,6 +98,7 @@ class PaginaInicio extends Component {
       if(response.errorBase){
         console.log("Error de red, intentelo mas tarde")
       }else{
+        console.log("Es codnutor? " + JSON.parse(valor.valor))
         //Es conductor?
         if(valor.valor){
           this.setState({
@@ -123,8 +124,7 @@ class PaginaInicio extends Component {
     
   }
 
-
-  cerrarSesion(){ 
+  cerrarSesion(){
     let input = {}, url = "";
     if(this.state.conductor){
       input = {placa: this.state.placa};
@@ -262,7 +262,6 @@ class PaginaInicio extends Component {
             <FormularioConductor  
               url={URL}
               autenticado={this.state.autenticado} 
-              iniciarSesion={this.iniciarSesion}
             />}>
           </Route> 
             
@@ -270,7 +269,6 @@ class PaginaInicio extends Component {
             <FormularioPasajero  
               url={URL}
               autenticado={this.state.autenticado} 
-              iniciarSesion={this.iniciarSesion}
             />}>
           </Route>     
           <Route exact path="/login" render={() => 
@@ -307,7 +305,6 @@ class PaginaInicio extends Component {
                   url={URL}
                   autenticado={this.state.autenticado} 
                   identificador={this.state.identificador}
-                  iniciarSesion={this.iniciarSesion}
                 />)
             }else{
               return(
@@ -322,6 +319,4 @@ class PaginaInicio extends Component {
     )    
   }
 }
-/* <TopAppBarActionItem aria-label="Download" alt="Download" icon="file_download" />*/
-
 export default PaginaInicio;

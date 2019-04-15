@@ -62,7 +62,7 @@ class RegistroConductor extends Component{
               //this.props.iniciarSesion();
               handleClick({message: "Este celular ya esta registrado"})
             }else{
-              alert("Registro exitosos, ya puede iniciar sesion")
+              alert("Registro exitoso, ya puede iniciar sesion")
               this.setState({
                 registrado:true
               });
@@ -143,14 +143,5 @@ class RegistroConductor extends Component{
       }
 }
 }
-
-/** <TextField className="textfield" icon="home"  outlined label="Dirección"
-      required="required"
-      helpText={{
-        validationMsg: true,
-        children: 'Dirección vacia'
-      }}
-      onChange={this.handleOnchange('direccion')}
-      /> */
 }
 export default RegistroConductor;
