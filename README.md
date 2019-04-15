@@ -28,3 +28,17 @@ You can now view interface in the browser. //-- Front ready
 ```
 
 So, ¡you can use it!
+
+## How to begin
+
+As default, program has 3 register for quickly start:
+
+User kind "Pasajero"
+- Identifier: 3163611275
+- Password: estemen
+
+User kind "Conductor"
+- Identifier: 1122445577
+- Password: nel
+
+This last with linked taxi "abc234".
