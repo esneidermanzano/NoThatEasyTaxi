@@ -29,8 +29,7 @@ You can now view interface in the browser. //-- Front ready
 
 ```
 
-So, ¡you can use it!
-
+So, ¡you can use it! view principal application in http://localhost:3000
 ## How to begin
 
 As default, program has 3 register for quickly start:
